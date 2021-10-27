@@ -1,0 +1,28 @@
+{
+  http_port     3080
+  https_port    3443
+  debug
+
+  systemd {
+    command hostname {
+      cmd hostname
+    }
+    app test-py-http-server {
+      cmd python3 -m http.server 4080
+    }
+  }
+}
+
+127.0.0.1, localhost {
+  route /pytest/* {
+    reverse_proxy localhost 4080
+  }
+
+  route /version* {
+    respond * "1.0.0" 200
+  }
+
+  route {
+    respond "my app"
+  }
+}
