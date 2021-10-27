@@ -67,6 +67,7 @@ qtest: covdir
 
 dep:
 	@echo "Making dependencies check ..."
+	@go get -u golang.org/x/lint/golint
 	@go get -u github.com/caddyserver/xcaddy/cmd/xcaddy@latest
 	@go get -u github.com/greenpau/versioned/cmd/versioned@latest
 
