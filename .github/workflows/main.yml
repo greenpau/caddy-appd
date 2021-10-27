@@ -51,6 +51,9 @@ jobs:
     - name: Install Go modules
       run: |
         make dep
+        go mod tidy
+        go mod verify
+        go mod download
     - name: Validate prerequisites
       run: |
         echo "*** Local binaries ***"
