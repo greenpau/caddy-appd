@@ -39,6 +39,7 @@ func (cfg *Config) AddUnit(u *Unit) error {
 	}
 	cfg.Units = append(cfg.Units, u)
 	cfg.unitMap[u.Name] = u
+	u.Seq = len(cfg.Units)
 	return nil
 }
 
@@ -75,7 +76,7 @@ func (cfg *Config) Services() ([]*Service, error) {
 	svcs := []*Service{}
 	for i, u := range cfg.Units {
 		svc := &Service{
-			Seq:  i,
+			Seq:  i + 1,
 			Unit: u,
 		}
 		svcs = append(svcs, svc)

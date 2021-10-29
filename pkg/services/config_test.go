@@ -53,31 +53,34 @@ func TestValidate(t *testing.T) {
 			want: []*Service{
 				{
 					Unit: &Unit{
+						Seq:     1,
 						Name:    "hostname",
 						Command: "hostname",
 						Kind:    "command",
 					},
-					Seq: 0,
+					Seq: 1,
 				},
 				{
 					Unit: &Unit{
+						Seq:       2,
 						Name:      "test-py-http-server",
 						Command:   "python3",
 						Kind:      "app",
 						Arguments: []string{"-m", "http.server", "4080"},
 						After:     []string{"hostname"},
 					},
-					Seq: 1,
+					Seq: 2,
 				},
 				{
 					Unit: &Unit{
+						Seq:       3,
 						Name:      "test-py-http-server-4081",
 						Command:   "python3",
 						Kind:      "app",
 						Arguments: []string{"-m", "http.server", "4081"},
 						Priority:  100,
 					},
-					Seq: 2,
+					Seq: 3,
 				},
 			},
 		},

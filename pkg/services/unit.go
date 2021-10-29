@@ -22,6 +22,8 @@ import (
 
 // Unit is a configuration for a command or app.
 type Unit struct {
+	// The order of the unit in Config.
+	Seq int `json:"seq,omitempty"`
 	// The alias for the Unit.
 	Name string `json:"name,omitempty"`
 	// The description of the Unit.

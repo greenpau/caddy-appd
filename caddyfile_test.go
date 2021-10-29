@@ -55,19 +55,22 @@ func TestParseCaddyfile(t *testing.T) {
                   {
                     "name":"hostname",
 					"cmd":"hostname",
-					"kind":"command"
+					"kind":"command",
+					"seq": 1
                   },
                   {
                     "name":"test-py-http-server",
 					"cmd":"python3",
 					"args":["-m","http.server","4080"],
-					"kind":"app"
+					"kind":"app",
+					"seq": 2
                   },
                   {
                     "name":"test-py-http-server-4081",
                     "cmd":"python3",
                     "args":["-m","http.server","4081"],
-					"kind":"app"
+					"kind":"app",
+					"seq": 3
                   }
                 ]
               }
