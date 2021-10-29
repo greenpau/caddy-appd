@@ -54,17 +54,20 @@ func TestParseCaddyfile(t *testing.T) {
                 "units": [
                   {
                     "name":"hostname",
-					"cmd":"hostname"
+					"cmd":"hostname",
+					"kind":"command"
                   },
                   {
                     "name":"test-py-http-server",
 					"cmd":"python3",
-					"args":["-m","http.server","4080"]
+					"args":["-m","http.server","4080"],
+					"kind":"app"
                   },
                   {
                     "name":"test-py-http-server-4081",
                     "cmd":"python3",
-                    "args":["-m","http.server","4081"]
+                    "args":["-m","http.server","4081"],
+					"kind":"app"
                   }
                 ]
               }
@@ -86,11 +89,22 @@ func TestParseCaddyfile(t *testing.T) {
 			d: caddyfile.NewTestDispenser(`
             systemd {
               command foo {
-                bar
+                cmd
               }
             }`),
 			shouldErr: true,
-			err:       fmt.Errorf("%s:%d - Error during parsing: too few args for %q", tf, 4, "bar"),
+			err:       fmt.Errorf("%s:%d - Error during parsing: too few args for %q directive", tf, 4, "cmd"),
+		},
+		{
+			name: "test parse config with too many arg for unit arg",
+			d: caddyfile.NewTestDispenser(`
+            systemd {
+              command foo {
+                noop foo
+              }
+            }`),
+			shouldErr: true,
+			err:       fmt.Errorf("%s:%d - Error during parsing: too many args for %q directive", tf, 4, "noop"),
 		},
 	}
 	for _, tc := range testcases {

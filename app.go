@@ -79,10 +79,15 @@ func (app *App) Provision(ctx caddy.Context) error {
 
 // Start starts the service manager and associated services.
 func (app App) Start() error {
-	if msgs := app.manager.Stop(); msgs != nil {
+	app.logger.Debug(
+		"starting service manager",
+		zap.String("app", app.Name),
+	)
+
+	if msgs := app.manager.Start(); msgs != nil {
 		for _, msg := range msgs {
 			app.logger.Error(
-				"failed to stop service",
+				"failed to start service",
 				zap.String("app", app.Name),
 				zap.String("service", msg.Service),
 				zap.Error(msg.Error),
@@ -90,12 +95,22 @@ func (app App) Start() error {
 		}
 		return fmt.Errorf("service manager failed to stop services")
 	}
-	app.logger.Debug("started service manager")
+
+	app.logger.Debug(
+		"started service manager",
+		zap.String("app", app.Name),
+	)
+
 	return nil
 }
 
 // Stop stops the service manager and associated services.
 func (app App) Stop() error {
+	app.logger.Debug(
+		"stopping service manager",
+		zap.String("app", app.Name),
+	)
+
 	if msgs := app.manager.Stop(); msgs != nil {
 		for _, msg := range msgs {
 			app.logger.Error(
@@ -107,6 +122,10 @@ func (app App) Stop() error {
 		}
 		return fmt.Errorf("service manager failed to stop services")
 	}
-	app.logger.Debug("stopped service manager")
+
+	app.logger.Debug(
+		"stopped service manager",
+		zap.String("app", app.Name),
+	)
 	return nil
 }

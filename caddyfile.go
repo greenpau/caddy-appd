@@ -15,6 +15,7 @@
 package systemd
 
 import (
+	"fmt"
 	"github.com/caddyserver/caddy/v2/caddyconfig"
 	"github.com/caddyserver/caddy/v2/caddyconfig/caddyfile"
 	"github.com/caddyserver/caddy/v2/caddyconfig/httpcaddyfile"
@@ -50,6 +51,17 @@ func init() {
 //   }
 // }
 
+var argRules = map[string]argRule{
+	"cmd":  argRule{Min: 1, Max: 255},
+	"args": argRule{Min: 1, Max: 255},
+	"noop": argRule{},
+}
+
+type argRule struct {
+	Min int
+	Max int
+}
+
 func parseCaddyfile(d *caddyfile.Dispenser, _ interface{}) (interface{}, error) {
 	app := new(App)
 	app.Config = services.NewConfig()
@@ -61,16 +73,20 @@ func parseCaddyfile(d *caddyfile.Dispenser, _ interface{}) (interface{}, error) 
 	for d.NextBlock(0) {
 		switch d.Val() {
 		case "command", "app":
+			dk := d.Val()
 			args := d.RemainingArgs()
 			if len(args) != 1 {
 				return nil, d.ArgErr()
 			}
-			unit := services.NewUnit(args[0])
+			unit, err := services.NewUnit(dk, args[0])
+			if err != nil {
+				return nil, d.Errf("%s", err)
+			}
 			for nesting := d.Nesting(); d.NextBlock(nesting); {
 				k := d.Val()
 				v := d.RemainingArgs()
-				if len(v) < 1 {
-					return nil, d.Errf("too few args for %q", k)
+				if err := validateArg(k, v); err != nil {
+					return nil, d.Errf("%s", err)
 				}
 				switch k {
 				case "cmd":
@@ -82,12 +98,16 @@ func parseCaddyfile(d *caddyfile.Dispenser, _ interface{}) (interface{}, error) 
 					unit.Command = v[0]
 				case "args":
 					unit.Arguments = append(unit.Arguments, v...)
+				case "noop":
+					unit.Noop = true
 				default:
 					// return nil, d.Errf("k: %v, v: %v", k, v)
 					return nil, d.Errf("unsupported %q key", k)
 				}
 			}
-			app.Config.AddUnit(unit)
+			if err := app.Config.AddUnit(unit); err != nil {
+				return nil, d.Err(err.Error())
+			}
 		default:
 			return nil, d.ArgErr()
 		}
@@ -97,4 +117,18 @@ func parseCaddyfile(d *caddyfile.Dispenser, _ interface{}) (interface{}, error) 
 		Name:  appName,
 		Value: caddyconfig.JSON(app, nil),
 	}, nil
+}
+
+func validateArg(k string, v []string) error {
+	r, exists := argRules[k]
+	if !exists {
+		return nil
+	}
+	if r.Min > len(v) {
+		return fmt.Errorf("too few args for %q directive", k)
+	}
+	if r.Max < len(v) {
+		return fmt.Errorf("too many args for %q directive", k)
+	}
+	return nil
 }

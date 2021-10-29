@@ -14,38 +14,71 @@
 
 package services
 
-// Unit is a configuration for a command or app.
-type Unit struct {
-	Name          string   `json:"name,omitempty"`
-	Description   string   `json:"description,omitempty"`
-	Wants         []string `json:"wants,omitempty"`
-	Requires      []string `json:"requires,omitempty"`
-	Before        []string `json:"before,omitempty"`
-	After         []string `json:"after,omitempty"`
-	WorkDirectory string   `json:"workdir,omitempty"`
-	Command       string   `json:"cmd,omitempty"`
-	Arguments     []string `json:"args,omitempty"`
-	Priority      uint64   `json:"priority,omitempty"`
-}
+import (
+	"fmt"
+)
 
 // Config is a configuration of Manager.
 type Config struct {
-	Units []*Unit `json:"units,omitempty"`
+	Units   []*Unit `json:"units,omitempty"`
+	chain   []int
+	unitMap map[string]*Unit
 }
 
 // NewConfig returns an instance of Config.
 func NewConfig() *Config {
-	return &Config{}
-}
-
-// NewUnit returns an instance of Unit.
-func NewUnit(s string) *Unit {
-	return &Unit{
-		Name: s,
+	return &Config{
+		unitMap: make(map[string]*Unit),
 	}
 }
 
 // AddUnit adds a unit entry to Config.
-func (cfg *Config) AddUnit(u *Unit) {
+func (cfg *Config) AddUnit(u *Unit) error {
+	if _, exists := cfg.unitMap[u.Name]; exists {
+		return fmt.Errorf("unit %q already exists", u.Name)
+	}
 	cfg.Units = append(cfg.Units, u)
+	cfg.unitMap[u.Name] = u
+	return nil
+}
+
+func (cfg *Config) validate() error {
+	for _, u := range cfg.Units {
+		for _, dep := range u.Before {
+			if _, exists := cfg.unitMap[dep]; !exists {
+				return fmt.Errorf("the %q in %q directive for unit %q is not found", dep, "before", u.Name)
+			}
+		}
+		for _, dep := range u.After {
+			if _, exists := cfg.unitMap[dep]; !exists {
+				return fmt.Errorf("the %q in %q directive for unit %q is not found", dep, "after", u.Name)
+			}
+		}
+	}
+	return nil
+}
+
+func (cfg *Config) order() error {
+	return nil
+}
+
+// Services validates the config and creates a list of services.
+func (cfg *Config) Services() ([]*Service, error) {
+	if err := cfg.validate(); err != nil {
+		return nil, err
+	}
+
+	if err := cfg.order(); err != nil {
+		return nil, err
+	}
+
+	svcs := []*Service{}
+	for i, u := range cfg.Units {
+		svc := &Service{
+			Seq:  i,
+			Unit: u,
+		}
+		svcs = append(svcs, svc)
+	}
+	return svcs, nil
 }

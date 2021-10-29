@@ -14,36 +14,9 @@
 
 package services
 
-import (
-	"go.uber.org/zap"
-	"sync"
-)
-
-// Manager manages services.
-type Manager struct {
-	mu       sync.Mutex
-	Services []*Service `json:"services,omitempty"`
-	started  bool
-	logger   *zap.Logger
-}
-
-// NewManager parses config and creates Manager instance.
-func NewManager(cfg *Config, logger *zap.Logger) (*Manager, error) {
-	m := &Manager{}
-	m.logger = logger
-	return m, nil
-}
-
-// Start starts services.
-func (m *Manager) Start() []*Status {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-	return nil
-}
-
-// Stop stops services.
-func (m *Manager) Stop() []*Status {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-	return nil
+// Service represents an application instance.
+type Service struct {
+	Seq    int     `json:"seq,omitempty"`
+	Unit   *Unit   `json:"unit,omitempty"`
+	Status *Status `json:"status,omitempty"`
 }

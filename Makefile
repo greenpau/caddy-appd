@@ -29,12 +29,12 @@ linter:
 
 test: covdir linter
 	@echo "DEBUG: running tests"
-	@go test -v -coverprofile=.coverage/coverage.out ./*.go
+	@go test -v -coverprofile=.coverage/coverage.out ./...
 	@echo "DEBUG: completed $@"
 
 ctest: covdir linter
 	@echo "DEBUG: running tests"
-	@time richgo test -v -coverprofile=.coverage/coverage.out ./*.go
+	@time richgo test -v -coverprofile=.coverage/coverage.out ./...
 	@echo "DEBUG: completed $@"
 
 covdir:
@@ -50,7 +50,7 @@ bindir:
 coverage: covdir
 	@echo "DEBUG: running coverage"
 	@go tool cover -html=.coverage/coverage.out -o .coverage/coverage.html
-	@go test -covermode=count -coverprofile=.coverage/coverage.out ./*.go
+	@go test -covermode=count -coverprofile=.coverage/coverage.out ./...
 	@go tool cover -func=.coverage/coverage.out | grep -v "100.0"
 	@echo "DEBUG: completed $@"
 
@@ -62,7 +62,8 @@ clean:
 qtest: covdir
 	@echo "DEBUG: perform quick tests ..."
 	@#go test -v -coverprofile=.coverage/coverage.out -run TestApp ./*.go
-	@go test -v -coverprofile=.coverage/coverage.out -run TestParseCaddyfile ./*.go
+	@#go test -v -coverprofile=.coverage/coverage.out -run TestParseCaddyfile ./*.go
+	@go test -v -coverprofile=.coverage/coverage.out -run Test* ./pkg/services/...
 	@echo "DEBUG: completed $@"
 
 dep:
