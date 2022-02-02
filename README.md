@@ -10,8 +10,9 @@ Service Management App for [Caddy v2](https://github.com/caddyserver/caddy).
 Please ask questions either here or via LinkedIn. I am happy to help you! @greenpau
 
 Please see other plugins:
-* [caddy-auth-portal](https://github.com/greenpau/caddy-auth-portal)
-* [caddy-authorize](https://github.com/greenpau/caddy-authorize)
+
+* [caddy-git](https://github.com/greenpau/caddy-git)
+* [caddy-security](https://github.com/greenpau/caddy-security)
 * [caddy-trace](https://github.com/greenpau/caddy-trace)
 
 <!-- begin-markdown-toc -->
