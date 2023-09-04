@@ -68,9 +68,10 @@ qtest: covdir
 
 dep:
 	@echo "Making dependencies check ..."
-	@go get -u golang.org/x/lint/golint
-	@go get -u github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-	@go get -u github.com/greenpau/versioned/cmd/versioned@latest
+	@go install golang.org/x/lint/golint@latest
+	@go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+	@go install github.com/greenpau/versioned/cmd/versioned@latest
+	@go install github.com/kyoh86/richgo@latest
 
 release:
 	@echo "Making release"
