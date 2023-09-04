@@ -85,7 +85,7 @@ func TestParseCaddyfile(t *testing.T) {
               }
             }`),
 			shouldErr: true,
-			err:       fmt.Errorf("%s:%d - Error during parsing: unsupported %q key", tf, 4, "bar"),
+			err:       fmt.Errorf("%s:%d - Error during parsing: unsupported %q key, import chain: ['']", tf, 4, "bar"),
 		},
 		{
 			name: "test parse config with too few arg for unit arg",
@@ -96,7 +96,7 @@ func TestParseCaddyfile(t *testing.T) {
               }
             }`),
 			shouldErr: true,
-			err:       fmt.Errorf("%s:%d - Error during parsing: too few args for %q directive", tf, 4, "cmd"),
+			err:       fmt.Errorf("%s:%d - Error during parsing: too few args for %q directive, import chain: ['']", tf, 4, "cmd"),
 		},
 		{
 			name: "test parse config with too many arg for unit arg",
@@ -107,7 +107,7 @@ func TestParseCaddyfile(t *testing.T) {
               }
             }`),
 			shouldErr: true,
-			err:       fmt.Errorf("%s:%d - Error during parsing: too many args for %q directive", tf, 4, "noop"),
+			err:       fmt.Errorf("%s:%d - Error during parsing: too many args for %q directive, import chain: ['']", tf, 4, "noop"),
 		},
 	}
 	for _, tc := range testcases {
