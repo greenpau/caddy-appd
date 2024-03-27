@@ -1,17 +1,16 @@
-# caddy-systemd
+# caddy-appd
 
-<a href="https://github.com/greenpau/caddy-systemd/actions/" target="_blank"><img src="https://github.com/greenpau/caddy-systemd/workflows/build/badge.svg?branch=main"></a>
-<a href="https://pkg.go.dev/github.com/greenpau/caddy-systemd" target="_blank"><img src="https://img.shields.io/badge/godoc-reference-blue.svg"></a>
+<a href="https://github.com/greenpau/caddy-appd/actions/" target="_blank"><img src="https://github.com/greenpau/caddy-appd/workflows/build/badge.svg?branch=main"></a>
+<a href="https://pkg.go.dev/github.com/greenpau/caddy-appd" target="_blank"><img src="https://img.shields.io/badge/godoc-reference-blue.svg"></a>
 <a href="https://caddy.community" target="_blank"><img src="https://img.shields.io/badge/community-forum-ff69b4.svg"></a>
-<a href="https://caddyserver.com/docs/modules/systemd" target="_blank"><img src="https://img.shields.io/badge/caddydocs-systemd-green.svg"></a>
+<a href="https://caddyserver.com/docs/modules/appd" target="_blank"><img src="https://img.shields.io/badge/caddydocs-appd-green.svg"></a>
 
 Service Management App for [Caddy v2](https://github.com/caddyserver/caddy).
 
 Please ask questions either here or via LinkedIn. I am happy to help you! @greenpau
 
 Please see other plugins:
-* [caddy-auth-portal](https://github.com/greenpau/caddy-auth-portal)
-* [caddy-authorize](https://github.com/greenpau/caddy-authorize)
+* [caddy-security](https://github.com/greenpau/caddy-security)
 * [caddy-trace](https://github.com/greenpau/caddy-trace)
 
 <!-- begin-markdown-toc -->
@@ -24,7 +23,7 @@ Please see other plugins:
 
 ## Overview
 
-The `caddy-systemd` is a Caddy app that starts and stops non-Caddy
+The `caddy-appd` is a Caddy app that starts and stops non-Caddy
 applications.
 
 The primary use case is enabling starting the applications proxied by `caddy`
@@ -40,7 +39,7 @@ to `webapp1`.
 
 ```
 {
-  systemd {
+  appd {
     app webapp1 {
       workdir /usr/local/www/webapp
       cmd /usr/local/bin/webapp

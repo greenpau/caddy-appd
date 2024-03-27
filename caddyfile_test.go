@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package systemd
+package appd
 
 import (
 	"encoding/json"
@@ -37,7 +37,7 @@ func TestParseCaddyfile(t *testing.T) {
 		{
 			name: "test parse config",
 			d: caddyfile.NewTestDispenser(`
-            systemd {
+            appd {
               command hostname {
                 cmd hostname
               }
@@ -79,35 +79,35 @@ func TestParseCaddyfile(t *testing.T) {
 		{
 			name: "test parse config with unsupported unit key",
 			d: caddyfile.NewTestDispenser(`
-            systemd {
+            appd {
               command foo {
                 bar baz
               }
             }`),
 			shouldErr: true,
-			err:       fmt.Errorf("%s:%d - Error during parsing: unsupported %q key, import chain: ['']", tf, 4, "bar"),
+			err:       fmt.Errorf("unsupported %q key, at %s:%d", "bar", tf, 4),
 		},
 		{
 			name: "test parse config with too few arg for unit arg",
 			d: caddyfile.NewTestDispenser(`
-            systemd {
+            appd {
               command foo {
                 cmd
               }
             }`),
 			shouldErr: true,
-			err:       fmt.Errorf("%s:%d - Error during parsing: too few args for %q directive, import chain: ['']", tf, 4, "cmd"),
+			err:       fmt.Errorf("too few args for %q directive, at %s:%d", "cmd", tf, 4),
 		},
 		{
 			name: "test parse config with too many arg for unit arg",
 			d: caddyfile.NewTestDispenser(`
-            systemd {
+            appd {
               command foo {
                 noop foo
               }
             }`),
 			shouldErr: true,
-			err:       fmt.Errorf("%s:%d - Error during parsing: too many args for %q directive, import chain: ['']", tf, 4, "noop"),
+			err:       fmt.Errorf("too many args for %q directive, at %s:%d", "noop", tf, 4),
 		},
 	}
 	for _, tc := range testcases {

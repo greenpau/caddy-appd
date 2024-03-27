@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package systemd
+package appd
 
 import (
 	"fmt"
 	"github.com/caddyserver/caddy/v2"
-	"github.com/greenpau/caddy-systemd/pkg/services"
+	"github.com/greenpau/caddy-appd/pkg/services"
 	"go.uber.org/zap"
 )
 
 var (
-	appName = "systemd"
+	appName = "appd"
 
 	// Interface guards
 	_ caddy.Provisioner = (*App)(nil)

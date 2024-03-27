@@ -12,25 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package systemd
+package appd
 
 import (
 	"fmt"
 	"github.com/caddyserver/caddy/v2/caddyconfig"
 	"github.com/caddyserver/caddy/v2/caddyconfig/caddyfile"
 	"github.com/caddyserver/caddy/v2/caddyconfig/httpcaddyfile"
-	"github.com/greenpau/caddy-systemd/pkg/services"
+	"github.com/greenpau/caddy-appd/pkg/services"
 )
 
 func init() {
-	httpcaddyfile.RegisterGlobalOption("systemd", parseCaddyfile)
+	httpcaddyfile.RegisterGlobalOption("appd", parseCaddyfile)
 }
 
 // parseCaddyfile sets up a service manager.
 //
 // Syntax:
 //
-// systemd {
+// appd {
 //   <command|app> <alias> {
 //     workdir <path/to/dir>
 //     cmd <path/to/command> [args]
