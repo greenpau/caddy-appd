@@ -27,6 +27,16 @@ build:
 	@for f in `find ./assets -type f -name 'Caddyfile'`; do bin/$(APP_NAME) fmt --overwrite $$f; done
 	@echo "$@: complete"
 
+.PHONY: devbuild
+devbuild:
+	@mkdir -p bin/
+	@rm -rf ./bin/$(APP_NAME)
+	@rm -rf ../xcaddy-$(PLUGIN_NAME)/*
+	@mkdir -p ../xcaddy-$(PLUGIN_NAME) && cd ../xcaddy-$(PLUGIN_NAME) && \
+		xcaddy build $(CADDY_VERSION) --output ../$(PLUGIN_NAME)/bin/$(APP_NAME) \
+		--with github.com/greenpau/$(PLUGIN_NAME)@$(LATEST_GIT_COMMIT)=$(BUILD_DIR) \
+		--with github.com/greenpau/caddy-trace@latest
+
 .PHONY: linter
 linter:
 	@echo "$@: started"
@@ -36,8 +46,8 @@ linter:
 .PHONY: test
 test: covdir linter
 	@echo "$@: started"
-	@echo "DEBUG: started $@"
-	@go test -v -coverprofile=.coverage/coverage.out ./...
+	@echo "DEBUG: started $@";
+	@go test -v -coverprofile=.coverage/coverage.out ./...;
 	@echo "$@: complete"
 
 .PHONY: ctest
