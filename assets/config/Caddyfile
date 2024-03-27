@@ -1,7 +1,7 @@
 {
 	debug
-	http_port 3080
-	https_port 3443
+	http_port 8080
+	https_port 8443
 	local_certs
 
 	appd {
@@ -10,7 +10,7 @@
 		}
 		app test-py-http-server {
 			cmd python3 -m http.server 4080
-			noop
+			#noop
 		}
 	}
 }

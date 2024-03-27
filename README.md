@@ -54,3 +54,12 @@ webapp1.myfiosgateway.com {
   }
 }
 ```
+
+There is a sample config in `assets/config/Caddyfile`.
+
+Test its configuration:
+
+```bash
+curl https://localhost:8443/version
+curl https://localhost:8443/pytest/foo
+```
