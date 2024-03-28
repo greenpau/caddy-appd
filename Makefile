@@ -37,6 +37,13 @@ devbuild:
 		--with github.com/greenpau/$(PLUGIN_NAME)@$(LATEST_GIT_COMMIT)=$(BUILD_DIR) \
 		--with github.com/greenpau/caddy-trace@latest
 
+.PHONY: rundev
+rundev:
+	@echo "$@: started"
+	@./bin/$(APP_NAME) run --config assets/config/Caddyfile
+	@echo "$@: complete"
+
+
 .PHONY: linter
 linter:
 	@echo "$@: started"

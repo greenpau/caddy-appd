@@ -19,39 +19,41 @@ import (
 	"strings"
 )
 
-type StatusKind int
+type StateKind int
 
 const (
-	UnknownStatus StatusKind = iota
-	PendingStatus
-	FailureStatus
-	SuccessStatus
+	UnknownState StateKind = iota
+	PendingState
+	RunningState
+	StoppedState
+	PausedState
+	CompletedState
 )
 
-// Status represent the last recorded status of a service.
-type Status struct {
-	Current     StatusKind `json:"current,omitempty"`
-	ServiceName string     `json:"service_name,omitempty"`
-	Error       error      `json:"error,omitempty"`
+// State represent the last recorded state of a service.
+type State struct {
+	Current     StateKind `json:"current,omitempty"`
+	ServiceName string    `json:"service_name,omitempty"`
+	Error       error     `json:"error,omitempty"`
 }
 
-// NewStatus creates Status instance.
-func NewStatus(name string, kind StatusKind) *Status {
-	st := &Status{
+// NewState creates State instance.
+func NewState(name string, kind StateKind) *State {
+	st := &State{
 		ServiceName: name,
 		Current:     kind,
 	}
 	return st
 }
 
-func (k StatusKind) String() string {
-	return [...]string{"Unknown", "Pending", "Failure", "Success"}[k]
+func (k StateKind) String() string {
+	return [...]string{"Unknown", "Pending", "Running", "Stopped", "Paused", "Completed"}[k]
 }
 
-func (k StatusKind) EnumIndex() int {
+func (k StateKind) EnumIndex() int {
 	return int(k)
 }
 
-func (k StatusKind) MarshalJSON() ([]byte, error) {
+func (k StateKind) MarshalJSON() ([]byte, error) {
 	return json.Marshal(strings.ToLower(k.String()))
 }

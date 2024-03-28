@@ -16,6 +16,8 @@ package services
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -49,6 +51,10 @@ type Unit struct {
 	Before []string `json:"before,omitempty"`
 	// The names of the Units that need to start prior to this one.
 	After []string `json:"after,omitempty"`
+	// The path to standard output file.
+	StdOutFilePath string `json:"std_out_file_path,omitempty"`
+	// The path to err output file.
+	StdErrFilePath string `json:"std_err_file_path,omitempty"`
 }
 
 // NewUnit returns an instance of Unit.
@@ -70,4 +76,27 @@ func NewUnit(kind, name string) (*Unit, error) {
 		return nil, fmt.Errorf("unit %q: invalid %q type", name, kind)
 	}
 	return &Unit{Name: name, Kind: kind}, nil
+}
+
+func validateFilePath(fp string) error {
+	fsfi, err := os.Stat(fp)
+	if err == nil {
+		if fsfi.IsDir() {
+			return fmt.Errorf("file path is directory")
+		}
+		return nil
+	}
+	if os.IsNotExist(err) {
+		// Check if parent exists
+		fd := filepath.Dir(fp)
+		_, parentErr := os.Stat(fd)
+		if parentErr == nil {
+			return nil
+		}
+		if os.IsNotExist(parentErr) {
+			return fmt.Errorf("parent directory does not exist: %s", fd)
+		}
+		return fmt.Errorf("parent directory erred: %s", fd)
+	}
+	return err
 }

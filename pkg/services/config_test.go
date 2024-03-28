@@ -15,8 +15,10 @@
 package services
 
 import (
-	"github.com/google/go-cmp/cmp"
+	"encoding/json"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestValidate(t *testing.T) {
@@ -58,7 +60,16 @@ func TestValidate(t *testing.T) {
 						Command: "hostname",
 						Kind:    "command",
 					},
-					Seq: 1,
+					Status: &Status{
+						Current:     PendingStatus,
+						ServiceName: "hostname",
+					},
+					State: &State{
+						Current:     PendingState,
+						ServiceName: "hostname",
+					},
+					Kind: WorkerKind(CommandWorker),
+					Seq:  1,
 				},
 				{
 					Unit: &Unit{
@@ -69,7 +80,16 @@ func TestValidate(t *testing.T) {
 						Arguments: []string{"-m", "http.server", "4080"},
 						After:     []string{"hostname"},
 					},
-					Seq: 2,
+					Status: &Status{
+						Current:     PendingStatus,
+						ServiceName: "test-py-http-server",
+					},
+					State: &State{
+						Current:     PendingState,
+						ServiceName: "test-py-http-server",
+					},
+					Kind: WorkerKind(ApplicationWorker),
+					Seq:  2,
 				},
 				{
 					Unit: &Unit{
@@ -80,7 +100,16 @@ func TestValidate(t *testing.T) {
 						Arguments: []string{"-m", "http.server", "4081"},
 						Priority:  100,
 					},
-					Seq: 3,
+					Status: &Status{
+						Current:     PendingStatus,
+						ServiceName: "test-py-http-server-4081",
+					},
+					State: &State{
+						Current:     PendingState,
+						ServiceName: "test-py-http-server-4081",
+					},
+					Kind: WorkerKind(ApplicationWorker),
+					Seq:  3,
 				},
 			},
 		},
@@ -106,7 +135,11 @@ func TestValidate(t *testing.T) {
 			if tc.shouldErr {
 				t.Fatalf("unexpected success, want: %v", tc.err)
 			}
-			if diff := cmp.Diff(tc.want, got); diff != "" {
+
+			gotJSON, _ := json.MarshalIndent(got, "", "  ")
+			wantJSON, _ := json.MarshalIndent(tc.want, "", "  ")
+
+			if diff := cmp.Diff(wantJSON, gotJSON); diff != "" {
 				t.Errorf("config mismatch (-want +got):\n%s", diff)
 			}
 		})

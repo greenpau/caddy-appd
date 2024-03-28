@@ -16,6 +16,7 @@ package appd
 
 import (
 	"fmt"
+
 	"github.com/caddyserver/caddy/v2/caddyconfig"
 	"github.com/caddyserver/caddy/v2/caddyconfig/caddyfile"
 	"github.com/caddyserver/caddy/v2/caddyconfig/httpcaddyfile"
@@ -98,6 +99,10 @@ func parseCaddyfile(d *caddyfile.Dispenser, _ interface{}) (interface{}, error) 
 					unit.Command = v[0]
 				case "args":
 					unit.Arguments = append(unit.Arguments, v...)
+				case "stdout_file":
+					unit.StdOutFilePath = v[0]
+				case "stderr_file":
+					unit.StdErrFilePath = v[0]
 				case "noop":
 					unit.Noop = true
 				default:

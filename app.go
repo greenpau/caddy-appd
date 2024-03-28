@@ -16,6 +16,7 @@ package appd
 
 import (
 	"fmt"
+
 	"github.com/caddyserver/caddy/v2"
 	"github.com/greenpau/caddy-appd/pkg/services"
 	"go.uber.org/zap"
@@ -67,6 +68,7 @@ func (app *App) Provision(ctx caddy.Context) error {
 			zap.String("app", app.Name),
 			zap.Error(err),
 		)
+		return err
 	}
 	app.manager = manager
 
@@ -89,11 +91,13 @@ func (app App) Start() error {
 			app.logger.Error(
 				"failed to start service",
 				zap.String("app", app.Name),
-				zap.String("service", msg.Service),
+				zap.String("service_name", msg.ServiceName),
 				zap.Error(msg.Error),
 			)
 		}
-		return fmt.Errorf("service manager failed to stop services")
+		if len(msgs) > 0 {
+			return fmt.Errorf("service manager failed to start services")
+		}
 	}
 
 	app.logger.Debug(
@@ -116,11 +120,13 @@ func (app App) Stop() error {
 			app.logger.Error(
 				"failed to stop service",
 				zap.String("app", app.Name),
-				zap.String("service", msg.Service),
+				zap.String("service_name", msg.ServiceName),
 				zap.Error(msg.Error),
 			)
 		}
-		return fmt.Errorf("service manager failed to stop services")
+		if len(msgs) > 0 {
+			return fmt.Errorf("service manager failed to stop services")
+		}
 	}
 
 	app.logger.Debug(

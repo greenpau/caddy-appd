@@ -16,12 +16,12 @@ package services
 
 import (
 	"fmt"
+	"sort"
 )
 
 // Config is a configuration of Manager.
 type Config struct {
 	Units   []*Unit `json:"units,omitempty"`
-	chain   []int
 	unitMap map[string]*Unit
 }
 
@@ -63,6 +63,14 @@ func (cfg *Config) order() error {
 	return nil
 }
 
+func (cfg *Config) unitOrderAsc() error {
+	asc := func(a, b int) bool {
+		return cfg.Units[a].Seq < cfg.Units[b].Seq
+	}
+	sort.Slice(cfg.Units, asc)
+	return nil
+}
+
 // Services validates the config and creates a list of services.
 func (cfg *Config) Services() ([]*Service, error) {
 	if err := cfg.validate(); err != nil {
@@ -74,10 +82,11 @@ func (cfg *Config) Services() ([]*Service, error) {
 	}
 
 	svcs := []*Service{}
+	logger := NewLogger()
 	for i, u := range cfg.Units {
-		svc := &Service{
-			Seq:  i + 1,
-			Unit: u,
+		svc, err := NewService(i, u, logger)
+		if err != nil {
+			return nil, err
 		}
 		svcs = append(svcs, svc)
 	}

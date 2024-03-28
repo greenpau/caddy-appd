@@ -5,12 +5,27 @@
 	local_certs
 
 	appd {
+		command mkdir_appd_dir {
+			cmd mkdir
+			args "-p" "./tmp/appd"
+		}
 		command hostname {
 			cmd hostname
+			stdout_file ./tmp/appd/hostname.out
+			stderr_file ./tmp/appd/hostname.err
+		}
+		command ifconfig {
+			cmd ifconfig
+			stdout_file ./tmp/appd/ifconfig.out
 		}
 		app test-py-http-server {
-			cmd python3 -m http.server 4080
-			#noop
+			cmd python3
+			args "-m" "http.server" "4080"
+		}
+		app test-py-http-server2 {
+			cmd python3
+			args "-m" "http.server" "4081"
+			noop
 		}
 	}
 }
